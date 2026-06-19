@@ -1,0 +1,26 @@
+Billing Policy
+
+Billing Cycle:
+
+* Customers are billed monthly.
+* Subscription charges are automatically processed on the billing date.
+
+Invoice Generation:
+
+* Invoices are generated automatically.
+* Customers can download invoices from the billing portal.
+
+Duplicate Charges:
+
+* Duplicate charges should be reported within 7 days.
+* The billing team will investigate reported issues.
+
+Payment Failure:
+
+* Failed payments trigger automatic retry attempts.
+* Customers will receive email notifications regarding failed transactions.
+
+Billing Disputes:
+
+* Billing disputes are reviewed by the finance team.
+* Resolution is typically provided within 5 business days.

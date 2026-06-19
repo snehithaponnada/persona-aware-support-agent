@@ -1,0 +1,29 @@
+Account Recovery Guide
+
+If a customer loses access to their account:
+
+1. Click the "Forgot Password" option on the login page.
+2. Enter the registered email address.
+3. Check the inbox for the password reset link.
+4. Create a new password that meets security requirements.
+5. Log in using the new password.
+
+Common Issues:
+
+* Reset email not received:
+
+  * Check spam or junk folder.
+  * Verify the email address entered.
+
+* Expired reset link:
+
+  * Request a new password reset email.
+
+* Account locked:
+
+  * Contact support for manual verification.
+
+Security Notice:
+
+Support agents will never ask for passwords.
+Identity verification may be required before restoring access.

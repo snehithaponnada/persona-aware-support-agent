@@ -1,0 +1,28 @@
+Refund Policy
+
+Eligible Refund Cases:
+
+* Duplicate payments
+* Incorrect charges
+* Service disruptions caused by platform errors
+
+Required Information:
+
+* Transaction ID
+* Registered email address
+* Description of the issue
+
+Processing Timeline:
+
+* Refund requests are reviewed within 5 business days.
+* Approved refunds are processed within 7 business days.
+
+Non-Refundable Cases:
+
+* Partial subscription usage
+* User-caused configuration errors
+* Requests submitted after the refund eligibility period
+
+Escalation:
+
+Complex refund requests may require manual review by the billing department.
