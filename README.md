@@ -1,380 +1,373 @@
-# Persona-Aware Support Agent with RAG
+# Persona-Aware Support Agent
 
-## Project Overview
+## 1. Project Overview
 
-This project is an AI-powered customer support assistant that combines Persona Detection, Retrieval-Augmented Generation (RAG), and Escalation Management to provide personalized support responses.
+The Persona-Aware Support Agent is an AI-powered customer support system that adapts its responses based on the user's persona. The system combines persona detection, Retrieval-Augmented Generation (RAG), response generation using Gemini, and escalation logic to provide personalized support experiences.
 
-The system analyzes incoming user queries, identifies the user's persona, retrieves relevant knowledge base documents, generates tailored responses, and determines whether human intervention is required.
+The agent can:
+
+* Detect user personas automatically
+* Retrieve relevant support documentation
+* Generate persona-specific responses
+* Escalate sensitive cases to human agents
+* Display confidence scores
+* Collect user feedback through a Streamlit interface
+
+---
+
+## 2. Tech Stack
+
+### Programming Language
+
+* Python 3.13
+
+### LLM
+
+* Google Gemini 2.5 Flash
+* google-genai 2.8.0
+
+### RAG Components
+
+* LangChain
+* ChromaDB 1.5.9
+* Sentence Transformers 5.6.0
+* HuggingFace Embeddings
+
+### Frontend
+
+* Streamlit 1.30.0
+
+### Additional Libraries
+
+* python-dotenv 1.2.2
+* pandas
+* numpy
+
+---
+
+## 3. Architecture Diagram
+
+User Query
+↓
+Persona Detection
+↓
+RAG Retrieval
+↓
+Response Generation
+↓
+Escalation Check
+↓
+Human Handoff (if required)
+↓
+Final Response
+
+### Workflow
+
+1. User submits a support query.
+2. Persona classifier identifies the user type.
+3. RAG retrieves relevant support documents.
+4. Gemini generates a personalized response.
+5. Escalation logic checks for sensitive cases.
+6. System either:
+
+   * Returns AI response
+   * Escalates to human support
+
+---
+
+## 4. Persona Detection Strategy
+
+### Classification Method
+
+The system uses rule-based persona classification.
 
 ### Supported Personas
 
-* Technical Expert
-* Frustrated User
-* Business Executive
+#### Technical Expert
 
-### Key Features
+Keywords:
 
-* Persona Classification using Gemini
-* Retrieval-Augmented Generation (RAG)
-* Personalized Response Generation
-* Human Escalation Detection
-* Confidence Scoring
-* Streamlit User Interface
-* Feedback Collection System
+* API
+* database
+* integration
+* authentication
+* server
+* endpoint
 
----
+#### Business Executive
 
-# Tech Stack
+Keywords:
 
-| Component              | Technology                             |
-| ---------------------- | -------------------------------------- |
-| Programming Language   | Python 3.13                            |
-| LLM                    | Gemini 2.5 Flash                       |
-| Framework              | LangChain                              |
-| Embeddings             | sentence-transformers/all-MiniLM-L6-v2 |
-| Vector Database        | ChromaDB                               |
-| UI                     | Streamlit                              |
-| Document Loading       | LangChain Document Loaders             |
-| Environment Management | python-dotenv                          |
+* billing
+* revenue
+* invoice
+* payment
+* subscription
 
-### Libraries
+#### Frustrated User
 
-```bash
-google-genai==2.8.0
-langchain
-langchain-community
-langchain-huggingface
-chromadb
-sentence-transformers
-streamlit==1.30.0
-python-dotenv
-```
+Keywords:
 
----
+* broken
+* not working
+* terrible
+* frustrated
+* issue
+* problem
 
-# Architecture Diagram
+### Prompt Design
 
-```text
-User Query
-    │
-    ▼
-Persona Detection
-    │
-    ▼
-RAG Retrieval
-    │
-    ▼
-Response Generation
-    │
-    ▼
-Escalation Check
-    │
-    ├── False ──► Return AI Response
-    │
-    └── True ──► Human Handoff
-```
+The detected persona is injected into the Gemini prompt so that response tone and detail level match the user.
 
----
+Examples:
 
-# Persona Detection Strategy
+Technical Expert:
 
-## Classification Method
-
-The system uses Gemini 2.5 Flash to classify user messages into one of three personas.
-
-### Personas
-
-1. Technical Expert
-2. Frustrated User
-3. Business Executive
-
-## Prompt Design
-
-A structured system prompt instructs Gemini to:
-
-* Analyze user intent
-* Identify communication style
-* Detect technical complexity
-* Return a JSON response
-
-Example Output:
-
-```json
-{
-  "persona": "Technical Expert",
-  "confidence": 0.95,
-  "reasoning": "User references HTTP status codes and API behavior."
-}
-```
-
-## Rules Used
-
-### Technical Expert
-
+* Detailed explanations
 * Technical terminology
-* API references
-* Error codes
-* Integration questions
+* Step-by-step debugging
 
-### Frustrated User
+Business Executive:
 
-* Emotional language
-* Complaints
-* Expressions of dissatisfaction
+* Professional tone
+* Business impact focus
+* Concise summaries
 
-### Business Executive
+Frustrated User:
 
-* Business impact
-* Operational concerns
-* Resolution timelines
-* Cost and performance discussions
+* Empathetic tone
+* Reassurance
+* Clear resolution steps
 
 ---
 
-# RAG Pipeline Design
+## 5. RAG Pipeline Design
 
-## Chunking Strategy
+### Chunking Strategy
 
-Documents are split using:
+RecursiveCharacterTextSplitter
 
-```python
-chunk_size = 400
-chunk_overlap = 40
-```
+Parameters:
 
-This preserves context while improving retrieval quality.
+* Chunk Size: 400
+* Chunk Overlap: 40
 
-## Embedding Model
+### Embedding Model
 
-```text
 sentence-transformers/all-MiniLM-L6-v2
-```
 
-Chosen because it is lightweight, fast, and suitable for semantic search.
-
-## Vector Database Choice
-
-### ChromaDB
-
-Reasons:
+Reason:
 
 * Lightweight
-* Easy local deployment
-* LangChain integration
-* Persistent storage
+* Fast
+* Strong semantic retrieval performance
 
-## Retrieval Strategy
+### Vector Database
 
-1. Convert user query into embedding.
-2. Perform similarity search.
-3. Retrieve top-k relevant chunks.
-4. Pass retrieved context to Gemini.
+ChromaDB
+
+Reason:
+
+* Easy integration with LangChain
+* Persistent local storage
+* Fast similarity search
+
+### Retrieval Strategy
+
+1. Load support documents
+2. Generate embeddings
+3. Store embeddings in ChromaDB
+4. Perform similarity search
+5. Return Top-K relevant chunks
 
 Default:
 
-```python
-top_k = 3
-```
+* Top K = 3
 
 ---
 
-# Escalation Logic
+## 6. Escalation Logic
 
-Certain support situations require human involvement.
+### Escalation Triggers
 
-## Escalation Triggers
+The system escalates when messages contain:
 
-### Account Security
+* hacked
+* fraud
+* lawsuit
+* legal
+* complaint
+* chargeback
+* account locked
+* refund not received
+* human agent
+* manager
 
-* hacked account
-* unauthorized access
-* suspicious login
+### Human Handoff
 
-### Billing Issues
+When escalation is triggered:
 
-* duplicate charge
-* refund request
-* payment dispute
+ESCALATION REQUIRED
 
-### Critical Issues
+The user is directed to human support.
 
-* legal complaint
-* regulatory concern
-* account lockout
+### Confidence Threshold
 
-## Confidence Threshold
+Confidence score is calculated from retrieval similarity scores.
 
-Confidence score is generated by the persona classifier.
+Higher retrieval relevance results in higher confidence percentages displayed in the UI.
 
-```python
-0.0 – 1.0
-```
+---
 
-Displayed in the Streamlit dashboard.
+## 7. Setup Instructions
+
+### Step 1
+
+Clone repository
+
+git clone <repository-url>
+
+### Step 2
+
+Navigate to project folder
+
+cd persona-aware-support-agent
+
+### Step 3
+
+Create .env file
+
+GEMINI_API_KEY=AQ.Ab8RN6K5673RcDcThCmuhkQJhbxyiQeY2xkuYK7eiy5btr3u2A
+
+### Step 4
+
+Run Streamlit Application
+
+python -m streamlit run streamlit_app.py
+
+---
+
+## 8. Environment Variables
+
+Required:
+
+GEMINI_API_KEY
 
 Example:
 
-```text
+GEMINI_API_KEY= AQ.Ab8RN6K5673RcDcThCmuhkQJhbxyiQeY2xkuYK7eiy5btr3u2A
+
+---
+
+## 9. Example Queries
+
+### Example 1
+
+Input:
+Where is the guide to clear cookies? It's been an hour and nothing is loading.
+
+Expected Persona:
+Frustrated User
+
+### Example 2
+
+Input:
+What are the header parameter requirements for your bearer token authentication?
+
+Expected Persona:
 Technical Expert
-95% Confidence
-```
 
----
+### Example 3
 
-# Setup Instructions
-
-## 1. Clone Repository
-
-```bash
-git clone <repository-url>
-cd persona-support-agent
-```
-
-## 2. Create Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate:
-
-Windows:
-
-```bash
-venv\Scripts\activate
-```
-
-## 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## 4. Create Environment File
-
-Create:
-
-```text
-.env
-```
-
-Add:
-
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-
-## 5. Run Application
-
-Console Version:
-
-```bash
-python app.py
-```
-
-Streamlit Version:
-
-```bash
-python -m streamlit run streamlit_app.py
-```
-
----
-
-# Environment Variables
-
-| Variable       | Description    |
-| -------------- | -------------- |
-| GEMINI_API_KEY | Gemini API Key |
-
-Obtain API Key:
-
-https://aistudio.google.com/app/apikey
-
----
-
-# Example Queries
-
-## Frustrated User
-
-```text
-Where is the guide to clear cookies? It's been an hour and nothing is loading on your interface!
-```
-
-## Technical Expert
-
-```text
-What are the header parameter requirements for your bearer token auth implementation?
-```
-
-## Business Executive
-
-```text
+Input:
 Our operational uptime is decreasing. We need a timeline of when billing disputes are resolved.
-```
 
-## Database Issue
+Expected Persona:
+Business Executive
 
-```text
-Our database integration is returning SQL connection timeout exceptions and causing internal server errors.
-```
+### Example 4
 
-## Escalation Case
+Input:
+I'm experiencing an issue with your database integration that's causing internal errors.
 
-```text
+Expected Persona:
+Technical Expert
+
+### Example 5
+
+Input:
 My billing statement has unexpected duplicate charges. I demand an immediate refund.
-```
+
+Expected Behavior:
+Escalation to Human Support
 
 ---
 
-# Testing Results
+## 10. Bonus Features Implemented
 
-The system was tested across:
+### Confidence Score
 
-* Persona Classification
-* RAG Retrieval
-* Response Generation
-* Escalation Detection
-* Streamlit User Interface
+Displays retrieval confidence percentage.
 
-Results matched expected behavior for the majority of test scenarios.
+### Feedback Collection
 
----
+Users can submit:
 
-# Bonus Features Implemented
+*  Helpful
+*  Not Helpful
 
-✅ Confidence Scoring
-
-✅ Streamlit Dashboard
-
-✅ Feedback Collection System
+through the Streamlit interface.
 
 ---
 
-# Known Limitations
+## 11. Known Limitations
 
-1. Persona classification depends on LLM interpretation and may vary slightly for ambiguous queries.
+### Current Limitations
 
-2. Retrieval quality depends on the quality and coverage of support documents.
+* Rule-based persona detection
+* Limited support document corpus
+* Single-turn conversations
+* No sentiment analysis
+* No analytics dashboard
 
-3. Limited to a predefined knowledge base.
+### Future Improvements
 
-4. No conversation memory between sessions.
-
-5. Human escalation currently returns a handoff recommendation rather than creating a support ticket.
-
----
-
-# Future Improvements
-
-* LangGraph workflow integration
+* Machine learning based persona classification
 * Multi-turn conversation memory
 * Sentiment analysis
-* Automated ticket generation
-* Human approval workflow
+* LangGraph workflows
+* Agentic multi-agent architecture
 * Analytics dashboard
-* Feedback-driven learning
+* Human approval workflows
+* Advanced feedback analytics
 
 ---
+
+## 12. Repository Structure
+
+persona-aware-support-agent/
+
+├── data/
+
+├── src/
+
+│ ├── classifier.py
+
+│ ├── rag_pipeline.py
+
+│ ├── generator.py
+
+│ └── escalator.py
+
+├── streamlit_app.py
+
+├── app.py
+
+├── requirements.txt
+
+├── README.md
+
+└── .env
 
 # Author
 
