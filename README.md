@@ -237,7 +237,7 @@ cd persona-aware-support-agent
 
 Create .env file
 
-GEMINI_API_KEY=AQ.Ab8RN6K5673RcDcThCmuhkQJhbxyiQeY2xkuYK7eiy5btr3u2A
+GEMINI_API_KEY=AQ.Ab.......
 
 ### Step 4
 
@@ -255,7 +255,7 @@ GEMINI_API_KEY
 
 Example:
 
-GEMINI_API_KEY= AQ.Ab8RN6K5673RcDcThCmuhkQJhbxyiQeY2xkuYK7eiy5btr3u2A
+GEMINI_API_KEY= AQ.Ab......
 
 ---
 
